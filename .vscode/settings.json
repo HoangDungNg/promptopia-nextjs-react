@@ -1,0 +1,10 @@
+{
+  "html-to-css-autocompletion.getSelectorsFromFileTypes": [
+    "jsx",
+    "tsx",
+    "ts",
+    "js",
+    "html",
+    "css"
+  ]
+}
