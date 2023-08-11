@@ -19,5 +19,7 @@ const UserSchema = new Schema({
   },
 });
 
+// looking for the model in the mongoose model array before defining a new one
+
 const User = models.User || model('User', UserSchema);
 export default User;
