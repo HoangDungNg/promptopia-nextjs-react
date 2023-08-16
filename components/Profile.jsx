@@ -1,7 +1,17 @@
 import React from 'react';
 import { PromptCard } from '.';
+import { useRouter } from 'next/navigation';
+import { appStorage } from '@utils/MySessionStorage';
 
 const Profile = ({ name, desc, data, handleEdit, handleDelete }) => {
+  const router = useRouter();
+
+  const handleTagClick = (tag) => {
+    appStorage.store('SEARCH_DATA', {
+      tag: tag,
+    });
+    router.push('/');
+  };
   return (
     <session className="w-full">
       <h1 className="head_text text-left">
@@ -13,8 +23,9 @@ const Profile = ({ name, desc, data, handleEdit, handleDelete }) => {
           <PromptCard
             key={post._id}
             post={post}
-            handleEdit={() => handleEdit && handleEdit(post)}
-            handleDelete={() => handleDelete && handleDelete(post)}
+            handleEdit={() => handleEdit?.(post)}
+            handleDelete={() => handleDelete?.(post)}
+            handleTagClick={handleTagClick}
           />
         ))}
       </div>

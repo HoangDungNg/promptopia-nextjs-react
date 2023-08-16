@@ -1,14 +1,13 @@
 'use client';
 import React from 'react';
-import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 
 import { Profile as ProfileComponent } from '@components';
 
-const MyProfile = () => {
-  const { data: session } = useSession();
+const MyProfile = (props) => {
   const router = useRouter();
   const [posts, setPosts] = React.useState([]);
+  const [profile, setProfile] = React.useState({});
   const handleEdit = (post) => {
     router.push(`/update-prompt?id=${post._id}`);
   };
@@ -34,21 +33,33 @@ const MyProfile = () => {
 
   React.useEffect(() => {
     const fetchPosts = async () => {
-      const response = await fetch(`/api/users/${session?.user.id}/posts`);
+      const response = await fetch(`/api/users/${props.params.id}/posts`);
       const data = await response.json();
       setPosts(data);
     };
+    const fetchProfile = async () => {
+      const response = await fetch(`/api/users/${props.params.id}`);
+      const profileData = await response.json();
+      setProfile(profileData);
+    };
 
-    if (session?.user.id) fetchPosts();
-  }, [session?.user.id]);
+    if (props.params.id) {
+      fetchProfile();
+      fetchPosts();
+    }
+  }, [props.params.id]);
   return (
-    <ProfileComponent
-      name="My"
-      desc="Welcome to your personalized profile page"
-      data={posts}
-      handleEdit={handleEdit}
-      handleDelete={handleDelete}
-    />
+    <React.Fragment>
+      {profile.username && (
+        <ProfileComponent
+          name={profile?.username}
+          desc={`Welcome to ${profile?.username}'s profile page`}
+          data={posts}
+          handleEdit={handleEdit}
+          handleDelete={handleDelete}
+        />
+      )}
+    </React.Fragment>
   );
 };
 
